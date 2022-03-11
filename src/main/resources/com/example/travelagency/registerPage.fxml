@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.travelagency.controller.RegisterController">
+   <children>
+      <Text disable="true" layoutX="272.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to the register window!" wrappingWidth="282.49395751953125">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text disable="true" layoutX="364.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
+      <TextField fx:id="registerUsername" layoutX="299.0" layoutY="77.0" prefHeight="26.0" prefWidth="183.0" />
+      <Text layoutX="364.0" layoutY="117.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+      <Text layoutX="346.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Repeat Password" />
+      <Text layoutX="618.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Already Registered?" />
+      <Button fx:id="button2" layoutX="618.0" layoutY="503.0" mnemonicParsing="false" onAction="#goToLoginPage" prefHeight="57.0" prefWidth="105.0" text="Log in page" />
+      <Button fx:id="button1" layoutX="317.0" layoutY="289.0" mnemonicParsing="false" onAction="#registerUser" prefHeight="108.0" prefWidth="148.0" text="Register!" />
+      <PasswordField fx:id="registerPassword1" layoutX="299.0" layoutY="121.0" prefHeight="26.0" prefWidth="183.0" />
+      <PasswordField fx:id="registerPassword2" layoutX="299.0" layoutY="164.0" prefHeight="26.0" prefWidth="183.0" />
+      <Text layoutX="371.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Email" />
+      <TextField fx:id="registerEmail" layoutX="299.0" layoutY="207.0" prefHeight="26.0" prefWidth="183.0" />
+      <Text layoutX="364.0" layoutY="247.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address" />
+      <TextField fx:id="registerAddress" layoutX="299.0" layoutY="250.0" prefHeight="26.0" prefWidth="183.0" />
+      <TextField fx:id="errorLogRegister" editable="false" layoutX="244.0" layoutY="421.0" prefHeight="26.0" prefWidth="310.0" style="-fx-text-fill: red;" />
+      <Text layoutX="244.0" layoutY="417.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Log" />
+   </children>
+</AnchorPane>
