@@ -3,10 +3,13 @@ package com.example.travelagency.controller;
 import com.example.travelagency.Main;
 import com.example.travelagency.entity.Destination;
 import com.example.travelagency.entity.Package;
+import com.example.travelagency.entity.User;
 import com.example.travelagency.repository.DestinationRepository;
 import com.example.travelagency.repository.PackageRepository;
+import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.DestinationService;
 import com.example.travelagency.service.PackageService;
+import com.example.travelagency.service.UserService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,6 +31,8 @@ public class AdminController implements Initializable {
     DestinationRepository destinationRepository = new DestinationRepository(destinationService);
     PackageService packageService = new PackageService();
     PackageRepository packageRepository = new PackageRepository(packageService);
+    UserService userService = new UserService();
+    UserRepository userRepository = new UserRepository(userService);
     @FXML
     private ListView<String> listViewAdmin;
 
@@ -204,6 +209,15 @@ public class AdminController implements Initializable {
             return;
         }
         try {
+            for(Package pkg:destination.getPackageList()){
+                List<User> users = pkg.getUsers();
+                for(User user : users){
+                    List<Package> packages = user.getPackages();
+                    packages.remove(pkg);
+                    user.setPackages(packages);
+                    userRepository.modifyUser(user);
+                }
+            }
             destinationRepository.removeDestination(destination);
         }catch (Exception e){
             destinationTextFieldError.setText("Could not remove destination");

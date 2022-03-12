@@ -1,6 +1,7 @@
 package com.example.travelagency.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "package")
@@ -21,22 +22,21 @@ public class Package {
     @Column
     private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "packages")
+    private List<User> users;
 
     @ManyToOne
     @JoinColumn(name = "destination_id")
     private Destination destination;
 
-    public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, User user, Destination destination) {
+    public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
         this.name = name;
         this.price = price;
         this.period = period;
         this.extraDetails = extraDetails;
         this.noOfPeople = noOfPeople;
         this.status = status;
-        this.user = user;
+        this.users = users;
         this.destination = destination;
     }
     public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, Destination destination) {
@@ -61,7 +61,7 @@ public class Package {
 
     }
 
-    public Package(int id, String name, int price, String period, String extraDetails, int noOfPeople, String status, User user, Destination destination) {
+    public Package(int id, String name, int price, String period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -69,7 +69,7 @@ public class Package {
         this.extraDetails = extraDetails;
         this.noOfPeople = noOfPeople;
         this.status = status;
-        this.user = user;
+        this.users = users;
         this.destination = destination;
     }
 
@@ -121,12 +121,8 @@ public class Package {
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public List<User> getUser() {
+        return users;
     }
 
     public Destination getDestination() {
@@ -141,4 +137,11 @@ public class Package {
         return id;
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 }

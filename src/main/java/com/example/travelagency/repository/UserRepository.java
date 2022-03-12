@@ -16,5 +16,8 @@ public class UserRepository {
     public User findUserByUsername(String username){
         return userService.findUser(username);
     }
+    public void modifyUser(User user){
+        userService.modifyUser(user);
+    }
 
 }

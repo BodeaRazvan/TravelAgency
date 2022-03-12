@@ -19,4 +19,5 @@ public class PackageRepository {
     public List<Package> getAllPackages(){return packageService.getAllPackages();}
     public void modifyPackage(Package pkg){packageService.modifyPackage(pkg);}
     public void removePackage(Package pkg){packageService.removePackage(pkg);}
+    public List<Package> getAllNotBookedPackages(){return packageService.getAllNotBookedPackages();}
 }

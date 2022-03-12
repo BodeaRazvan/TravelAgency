@@ -19,7 +19,10 @@ public class User {
     @Column
     private String role;
 
-    @OneToMany(mappedBy = "user")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "user_package",
+            joinColumns = {@JoinColumn (name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "package_id")})
     private List<Package> packages;
 
     public User(String userName, String password, String address, String email, String role, List<Package> packages) {
