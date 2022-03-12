@@ -1,6 +1,5 @@
 package com.example.travelagency;
 
-import com.example.travelagency.controller.RegisterController;
 import com.example.travelagency.entity.User;
 import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.UserService;
@@ -17,7 +16,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("registerPage"), 800, 600);
+        scene = new Scene(loadFXML("loginPage"), 1280, 720);
         stage.setScene(scene);
         stage.show();
     }
@@ -34,7 +33,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         UserService userService = new UserService();
         UserRepository userRepository = new UserRepository(userService);
-
         launch();
     }
 

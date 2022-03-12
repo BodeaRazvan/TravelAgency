@@ -31,7 +31,6 @@ public class User {
         this.packages = packages;
     }
 
-
     public User() {
 
     }

@@ -39,8 +39,38 @@ public class Package {
         this.user = user;
         this.destination = destination;
     }
+    public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, Destination destination) {
+        this.name = name;
+        this.price = price;
+        this.period = period;
+        this.extraDetails = extraDetails;
+        this.noOfPeople = noOfPeople;
+        this.status = status;
+        this.destination = destination;
+    }
+    public Package(String name, int price, String period, String extraDetails, int noOfPeople, Destination destination) {
+        this.name = name;
+        this.price = price;
+        this.period = period;
+        this.extraDetails = extraDetails;
+        this.noOfPeople = noOfPeople;
+        this.status = "NOT_BOOKED";
+        this.destination = destination;
+    }
     public Package(){
 
+    }
+
+    public Package(int id, String name, int price, String period, String extraDetails, int noOfPeople, String status, User user, Destination destination) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.period = period;
+        this.extraDetails = extraDetails;
+        this.noOfPeople = noOfPeople;
+        this.status = status;
+        this.user = user;
+        this.destination = destination;
     }
 
     public String getName() {

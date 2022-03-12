@@ -9,16 +9,13 @@ public class Destination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
-    private String name;
-    @Column
+    @Column(unique = true)
     private String country;
 
-    @OneToMany(mappedBy = "destination")
+    @OneToMany(mappedBy = "destination" , orphanRemoval = true)
     private List<Package> packageList;
 
-    public Destination(String name, String country, List<Package> packageList) {
-        this.name = name;
+    public Destination(String country, List<Package> packageList) {
         this.country = country;
         this.packageList = packageList;
     }
@@ -26,12 +23,10 @@ public class Destination {
 
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public Destination(int id, String country, List<Package> packageList) {
+        this.id = id;
+        this.country = country;
+        this.packageList = packageList;
     }
 
     public String getCountry() {

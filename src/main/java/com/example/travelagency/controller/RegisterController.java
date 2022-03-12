@@ -40,8 +40,8 @@ public class RegisterController {
 
     @FXML
     private int registerUser(){
-         UserService userService = new UserService();
-         UserRepository userRepository = new UserRepository(userService);
+        UserService userService = new UserService();
+        UserRepository userRepository = new UserRepository(userService);
         errorLogRegister.clear();
         if(registerEmail.getText().equals("") || registerAddress.getText().equals("") || registerUsername.getText().equals("") || registerPassword1.getText().equals("") || registerPassword2.getText().equals("")){
             errorLogRegister.setText("All fields must be completed");
