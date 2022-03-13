@@ -1,27 +1,52 @@
 package com.example.travelagency.repository;
 
-import com.example.travelagency.entity.Package;
-import com.example.travelagency.service.PackageService;
 
+import com.example.travelagency.entity.Package;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PackageRepository {
-    private final PackageService packageService;
-
-    public PackageRepository(PackageService packageService) {
-        this.packageService = packageService;
-    }
+    private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ro.tutorial.lab.SD");
+    EntityManager em = entityManagerFactory.createEntityManager();
 
     public void addPackage(Package pkg){
-        packageService.addPackage(pkg);
+        em.getTransaction().begin();
+        em.persist(pkg);
+        em.getTransaction().commit();
+        em.close();
     }
-    public Package getPackageById(int id){return packageService.getPackageById(id);}
-    public List<Package> getAllPackages(){return packageService.getAllPackages();}
-    public void modifyPackage(Package pkg){packageService.modifyPackage(pkg);}
-    public void removePackage(Package pkg){packageService.removePackage(pkg);}
-    public List<Package> getAllNotBookedPackages(){return packageService.getAllNotBookedPackages();}
-    public List<Package> filterPackages(List<Package> packages, String destination, String name, int price, Date period, String status, int noOfPeople){
-        return packageService.filterPackages(packages,destination,name,price,period,status,noOfPeople);
+
+    public void modifyPackage(Package pkg){
+        em.getTransaction().begin();
+        em.merge(pkg);
+        em.getTransaction().commit();
+        em.close();
     }
+
+    public void removePackage(Package pkg){
+        Package newPkg = em.find(Package.class,pkg.getId());
+        em.getTransaction().begin();
+        em.remove(newPkg);
+        em.getTransaction().commit();
+        em.close();
+    }
+
+    public List<Package> getAllPackages(){
+        return em.createQuery("select p from Package p", Package.class).getResultList();
+    }
+
+    public List<Package> getAllNotBookedPackages(){
+        return em.createQuery("select p from Package p where p.status =:value1 or p.status =:value2 ", Package.class).
+                setParameter("value1","NOT_BOOKED").setParameter("value2","IN_PROGRESS").getResultList();
+    }
+
+    public Package getPackageById(int id){
+        return (Package) em.createQuery("select p from Package p where p.id =:value1").setParameter("value1",id).getSingleResult();
+    }
+
 }

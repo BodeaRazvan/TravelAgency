@@ -4,12 +4,12 @@ import com.example.travelagency.Main;
 import com.example.travelagency.entity.Destination;
 import com.example.travelagency.entity.Package;
 import com.example.travelagency.entity.User;
-import com.example.travelagency.repository.DestinationRepository;
-import com.example.travelagency.repository.PackageRepository;
-import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.DestinationService;
 import com.example.travelagency.service.PackageService;
 import com.example.travelagency.service.UserService;
+import com.example.travelagency.repository.DestinationRepository;
+import com.example.travelagency.repository.PackageRepository;
+import com.example.travelagency.repository.UserRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,19 +21,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class AdminController implements Initializable {
     private Destination currentDestination;
-    DestinationService destinationService = new DestinationService();
-    DestinationRepository destinationRepository = new DestinationRepository(destinationService);
-    PackageService packageService = new PackageService();
-    PackageRepository packageRepository = new PackageRepository(packageService);
-    UserService userService = new UserService();
-    UserRepository userRepository = new UserRepository(userService);
+    DestinationRepository destinationRepository = new DestinationRepository();
+    DestinationService destinationService = new DestinationService(destinationRepository);
+    PackageRepository packageRepository = new PackageRepository();
+    PackageService packageService = new PackageService(packageRepository);
+    UserRepository userRepository = new UserRepository();
+    UserService userService = new UserService(userRepository);
     @FXML
     private ListView<String> listViewAdmin;
 
@@ -74,7 +73,7 @@ public class AdminController implements Initializable {
     void refreshLists(){
         listViewAdmin.getItems().clear();
         adminTableView.getItems().clear();
-        List<Destination> destinations = destinationRepository.getAllDestinations();
+        List<Destination> destinations = destinationService.getAllDestinations();
         ObservableList<String> destinationsList = FXCollections.observableArrayList();
         for(Destination destination: destinations){
             destinationsList.add(destination.getCountry());
@@ -84,7 +83,7 @@ public class AdminController implements Initializable {
 
     public Destination getSelectedItem(){
         String dest = listViewAdmin.getSelectionModel().getSelectedItem();
-        return destinationRepository.getDestinationByCountry(dest);
+        return destinationService.getDestinationByCountry(dest);
     }
 
     public Package getSelectedPackage(){
@@ -131,7 +130,7 @@ public class AdminController implements Initializable {
             return;
         }
         Destination destination = new Destination(destinationTextField.getText(),null);
-        destinationRepository.addDestination(destination);
+        destinationService.addDestination(destination);
         refresh();
         destinationTextFieldError.setText("Destination added");
     }
@@ -163,8 +162,7 @@ public class AdminController implements Initializable {
                 }
                 Package pkg = new Package(pkgName.getText(),Integer.parseInt(pkgPrice.getText()),
                         Date.valueOf(pkgPeriod.getValue()),pkgDetails.getText(),Integer.parseInt(pkgNoOfPeople.getText()),currentDestination);
-                packageRepository.addPackage(pkg);
-                System.out.println("Got here");
+                packageService.addPackage(pkg);
                 refresh();
                 packageTextFieldError.setText("Package added successfully");
             }catch (Exception e){
@@ -206,7 +204,7 @@ public class AdminController implements Initializable {
             newPkg.setExtraDetails(pkgDetails.getText());
         }
         try {
-            packageRepository.modifyPackage(newPkg);
+            packageService.modifyPackage(newPkg);
         }catch (Exception e){
             packageTextFieldError.setText("Could not edit Package");
             return;
@@ -224,7 +222,7 @@ public class AdminController implements Initializable {
         }
         Package newPkg = new Package(pkg.getId(),pkg.getName(),pkg.getPrice(),pkg.getPeriod(),pkg.getExtraDetails(),pkg.getNoOfPeople(),pkg.getStatus(),pkg.getUser(),pkg.getDestination());
         try {
-            packageRepository.removePackage(newPkg);
+            packageService.removePackage(newPkg);
         }catch (Exception e){
             packageTextFieldError.setText("Could not delete package");
         }
@@ -245,10 +243,10 @@ public class AdminController implements Initializable {
                     List<Package> packages = user.getPackages();
                     packages.remove(pkg);
                     user.setPackages(packages);
-                    userRepository.modifyUser(user);
+                    userService.modifyUser(user);
                 }
             }
-            destinationRepository.removeDestination(destination);
+            destinationService.removeDestination(destination);
         }catch (Exception e){
             destinationTextFieldError.setText("Could not remove destination");
             return;
@@ -262,7 +260,7 @@ public class AdminController implements Initializable {
         clear();
         try {
             adminTableView.getItems().clear();
-            List<Package> packages = packageRepository.getAllNotBookedPackages();
+            List<Package> packages = packageService.getAllPackages();
             adminTableView.getItems().addAll(packages);
         }catch(Exception e){
             packageTextFieldError.setText("Could not load packages");

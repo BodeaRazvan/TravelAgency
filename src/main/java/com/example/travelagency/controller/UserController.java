@@ -4,12 +4,12 @@ import com.example.travelagency.Main;
 import com.example.travelagency.entity.Destination;
 import com.example.travelagency.entity.Package;
 import com.example.travelagency.entity.User;
-import com.example.travelagency.repository.DestinationRepository;
-import com.example.travelagency.repository.PackageRepository;
-import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.DestinationService;
 import com.example.travelagency.service.PackageService;
 import com.example.travelagency.service.UserService;
+import com.example.travelagency.repository.DestinationRepository;
+import com.example.travelagency.repository.PackageRepository;
+import com.example.travelagency.repository.UserRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,14 +25,14 @@ import java.util.ResourceBundle;
 
 public class UserController implements Initializable {
 
-    PackageService packageService = new PackageService();
-    PackageRepository packageRepository = new PackageRepository(packageService);
+    PackageRepository packageRepository = new PackageRepository();
+    PackageService packageService = new PackageService(packageRepository);
 
-    UserService userService = new UserService();
-    UserRepository userRepository = new UserRepository(userService);
+    UserRepository userRepository = new UserRepository();
+    UserService userService = new UserService(userRepository);
 
-    DestinationService destinationService = new DestinationService();
-    DestinationRepository destinationRepository = new DestinationRepository(destinationService);
+    DestinationRepository destinationRepository = new DestinationRepository();
+    DestinationService destinationService = new DestinationService(destinationRepository);
 
     @FXML private ListView<String> listViewUser;
 
@@ -73,7 +73,7 @@ public class UserController implements Initializable {
     void refreshLists(){
         listViewUser.getItems().clear();
         userTableView.getItems().clear();
-        List<Destination> destinations = destinationRepository.getAllDestinations();
+        List<Destination> destinations = destinationService.getAllDestinations();
         ObservableList<String> destinationsList = FXCollections.observableArrayList();
         for(Destination destination: destinations){
             destinationsList.add(destination.getCountry());
@@ -103,7 +103,7 @@ public class UserController implements Initializable {
 
     public Destination getSelectedItem(){
         String dest = listViewUser.getSelectionModel().getSelectedItem();
-        return destinationRepository.getDestinationByCountry(dest);
+        return destinationService.getDestinationByCountry(dest);
     }
 
 
@@ -125,7 +125,7 @@ public class UserController implements Initializable {
         clear();
         try {
             userTableView.getItems().clear();
-            List<Package> packages = packageRepository.getAllNotBookedPackages();
+            List<Package> packages = packageService.getAllNotBookedPackages();
             userTableView.getItems().addAll(packages);
         }catch(Exception e){
             packageTextFieldError.setText("Could not load packages");
@@ -161,11 +161,11 @@ public class UserController implements Initializable {
         if(pkg.getNoOfPeople() == 0){
             pkg.setStatus("BOOKED");
         }
-        packageRepository.modifyPackage(pkg);
+        packageService.modifyPackage(pkg);
         List<Package> packages = user.getPackages();
         packages.add(pkg);
         user.setPackages(packages);
-        userRepository.modifyUser(user);
+        userService.modifyUser(user);
         refresh();
         packageTextFieldError.setText("Vacation booked");
     }
@@ -197,8 +197,8 @@ public class UserController implements Initializable {
         if(pkg.getStatus().equals("BOOKED")){
             pkg.setStatus("IN_PROGRESS");
         }
-        packageRepository.modifyPackage(pkg);
-        userRepository.modifyUser(user);
+        packageService.modifyPackage(pkg);
+        userService.modifyUser(user);
         refresh();
     }
 
@@ -221,7 +221,7 @@ public class UserController implements Initializable {
             return;
         }
 
-        List<Package> foundPackages = packageRepository.filterPackages(packages,dest,name,price,period,status,noOfPeople);
+        List<Package> foundPackages = packageService.filterPackages(packages,dest,name,price,period,status,noOfPeople);
 
         userTableView.getItems().clear();
         userTableView.getItems().addAll(foundPackages);

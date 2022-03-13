@@ -1,8 +1,7 @@
 package com.example.travelagency;
 
-import com.example.travelagency.entity.User;
-import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.UserService;
+import com.example.travelagency.repository.UserRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,8 +30,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        UserService userService = new UserService();
-        UserRepository userRepository = new UserRepository(userService);
+        UserRepository userRepository = new UserRepository();
+        UserService userService = new UserService(userRepository);
         launch();
     }
 

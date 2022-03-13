@@ -2,8 +2,8 @@ package com.example.travelagency.controller;
 
 import com.example.travelagency.Main;
 import com.example.travelagency.entity.User;
-import com.example.travelagency.repository.UserRepository;
 import com.example.travelagency.service.UserService;
+import com.example.travelagency.repository.UserRepository;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -40,8 +40,8 @@ public class RegisterController {
 
     @FXML
     private int registerUser(){
-        UserService userService = new UserService();
-        UserRepository userRepository = new UserRepository(userService);
+        UserRepository userRepository = new UserRepository();
+        UserService userService = new UserService(userRepository);
         errorLogRegister.clear();
         if(registerEmail.getText().equals("") || registerAddress.getText().equals("") || registerUsername.getText().equals("") || registerPassword1.getText().equals("") || registerPassword2.getText().equals("")){
             errorLogRegister.setText("All fields must be completed");
@@ -62,7 +62,7 @@ public class RegisterController {
         User user = new User(registerUsername.getText(), registerPassword1.getText(), registerAddress.getText(), registerEmail.getText(), "user", null);
 
         try{
-           userRepository.addUser(user);
+           userService.addUser(user);
         }catch (Exception e){
             errorLogRegister.setText("User already registered");
             return 0;

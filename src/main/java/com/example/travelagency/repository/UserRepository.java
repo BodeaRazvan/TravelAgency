@@ -1,23 +1,32 @@
 package com.example.travelagency.repository;
 
 import com.example.travelagency.entity.User;
-import com.example.travelagency.service.UserService;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 public class UserRepository {
-    private final UserService userService;
-
-    public UserRepository(UserService userService) {
-        this.userService = userService;
-    }
+    private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ro.tutorial.lab.SD");
+    EntityManager em = entityManagerFactory.createEntityManager();
 
     public void addUser(User user){
-        userService.addUser(user);
+        em.getTransaction().begin();
+        em.persist(user);
+        em.getTransaction().commit();
+        em.close();
     }
-    public User findUserByUsername(String username){
-        return userService.findUser(username);
-    }
+
     public void modifyUser(User user){
-        userService.modifyUser(user);
+        em.getTransaction().begin();
+        em.merge(user);
+        em.getTransaction().commit();
+        em.close();
+    }
+
+
+    public User findUser(String username){
+        return (User) em.createQuery("select u from User u where u.userName =:value1").setParameter("value1",username).getSingleResult();
     }
 
 }
