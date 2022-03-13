@@ -7,6 +7,7 @@ import com.example.travelagency.entity.Package;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class PackageService {
         return (Package) em.createQuery("select p from Package p where p.id =:value1").setParameter("value1",id).getSingleResult();
     }
 
-    public List<Package> filterPackages(List<Package> packages, String destination, String name, int price, String period,String status, int noOfPeople){
+    public List<Package> filterPackages(List<Package> packages, String destination, String name, int price, Date period, String status, int noOfPeople){
         try{
             return packages.stream()
                     .filter(pkg -> destination.equals("") || pkg.getDestination().getCountry().contains(destination))
@@ -57,7 +58,7 @@ public class PackageService {
                     .filter(pkg -> price==-1 || pkg.getPrice()<=price)
                     .filter(pkg -> noOfPeople==-1 || pkg.getNoOfPeople()>=noOfPeople)
                     .filter(pkg -> status.equals("") || pkg.getStatus().equals(status))
-                    .filter(pkg -> period.equals("") || pkg.getPeriod().contains(period))
+                    .filter(pkg -> period == null || pkg.getPeriod().toLocalDate().isAfter(period.toLocalDate()))
                     .collect(Collectors.toList());
         }catch (Exception e){
             e.printStackTrace();

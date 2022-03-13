@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -48,12 +49,10 @@ public class UserController implements Initializable {
 
     @FXML private TextField destFilter;
     @FXML private TextField nameFilter;
-    @FXML private TextField periodFilter;
+    @FXML private DatePicker periodFilter;
     @FXML private TextField priceFilter;
     @FXML private TextField statusFilter;
     @FXML private TextField noOfPeopleFilter;
-
-    @FXML private DatePicker datePicker;
 
 
     @Override
@@ -141,6 +140,12 @@ public class UserController implements Initializable {
     public void bookVacation() throws IOException {
         User user = LoginController.getCurrUser();
         Package pkg = getSelectedPackage();
+        for(Package userPkg : user.getPackages()){
+            if(userPkg.getId()==pkg.getId()){
+                packageTextFieldError.setText("Cannot book the same package 2 times");
+                return;
+            }
+        }
         if(pkg == null){
             packageTextFieldError.setText("Select a package first");
             return;
@@ -201,7 +206,9 @@ public class UserController implements Initializable {
     public void filterPackages(){
         String dest = destFilter.getText();
         String name = nameFilter.getText();
-        String period = periodFilter.getText();
+        Date period = null;
+        if(periodFilter.getValue() != null)
+             period = Date.valueOf(periodFilter.getValue());
         int price;
         if(priceFilter.getText().equals("")) price = 99999; else price = Integer.parseInt(priceFilter.getText());
         String status = statusFilter.getText();

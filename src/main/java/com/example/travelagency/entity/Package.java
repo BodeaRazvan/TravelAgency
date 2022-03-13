@@ -1,6 +1,7 @@
 package com.example.travelagency.entity;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,7 @@ public class Package {
     @Column
     private int price;
     @Column
-    private String period;
+    private Date period;
     @Column
     private String extraDetails;
     @Column
@@ -29,7 +30,7 @@ public class Package {
     @JoinColumn(name = "destination_id")
     private Destination destination;
 
-    public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
+    public Package(String name, int price, Date period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
         this.name = name;
         this.price = price;
         this.period = period;
@@ -39,7 +40,7 @@ public class Package {
         this.users = users;
         this.destination = destination;
     }
-    public Package(String name, int price, String period, String extraDetails, int noOfPeople, String status, Destination destination) {
+    public Package(String name, int price, Date period, String extraDetails, int noOfPeople, String status, Destination destination) {
         this.name = name;
         this.price = price;
         this.period = period;
@@ -48,7 +49,7 @@ public class Package {
         this.status = status;
         this.destination = destination;
     }
-    public Package(String name, int price, String period, String extraDetails, int noOfPeople, Destination destination) {
+    public Package(String name, int price, Date period, String extraDetails, int noOfPeople, Destination destination) {
         this.name = name;
         this.price = price;
         this.period = period;
@@ -61,7 +62,7 @@ public class Package {
 
     }
 
-    public Package(int id, String name, int price, String period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
+    public Package(int id, String name, int price, Date period, String extraDetails, int noOfPeople, String status, List<User> users, Destination destination) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -89,11 +90,11 @@ public class Package {
         this.price = price;
     }
 
-    public String getPeriod() {
+    public Date getPeriod() {
         return period;
     }
 
-    public void setPeriod(String period) {
+    public void setPeriod(Date period) {
         this.period = period;
     }
 

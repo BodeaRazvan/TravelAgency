@@ -14,14 +14,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -50,7 +51,7 @@ public class AdminController implements Initializable {
     @FXML private TextField destinationTextField;
 
     @FXML private TextField pkgName;
-    @FXML private TextField pkgPeriod;
+    @FXML private DatePicker pkgPeriod;
     @FXML private TextField pkgPrice;
     @FXML private TextField pkgDetails;
     @FXML private TextField pkgNoOfPeople;
@@ -142,13 +143,32 @@ public class AdminController implements Initializable {
             initializeHeaders();
             this.currentDestination = getSelectedItem();
             try {
+                if(pkgPeriod.getValue() == null){
+                    packageTextFieldError.setText("Date must be added");
+                    return;
+                }else{
+                 LocalDateTime now = LocalDateTime.now();
+                 if(pkgPeriod.getValue().isBefore(ChronoLocalDate.from(now))){
+                     packageTextFieldError.setText("Date must be in the future");
+                     return;
+                 }
+                }
+                if(Integer.parseInt(pkgPrice.getText())<=0){
+                    packageTextFieldError.setText("Price must be > 0");
+                    return;
+                }
+                if(Integer.parseInt(pkgNoOfPeople.getText())<=0){
+                    packageTextFieldError.setText("Nr of available spots must be > 0");
+                    return;
+                }
                 Package pkg = new Package(pkgName.getText(),Integer.parseInt(pkgPrice.getText()),
-                        pkgPeriod.getText(),pkgDetails.getText(),Integer.parseInt(pkgNoOfPeople.getText()),currentDestination);
+                        Date.valueOf(pkgPeriod.getValue()),pkgDetails.getText(),Integer.parseInt(pkgNoOfPeople.getText()),currentDestination);
                 packageRepository.addPackage(pkg);
+                System.out.println("Got here");
                 refresh();
                 packageTextFieldError.setText("Package added successfully");
             }catch (Exception e){
-                packageTextFieldError.setText("All fields must be filled");
+                e.printStackTrace();
             }
         }catch (Exception e){
             packageTextFieldError.setText("Select a destination first");
@@ -167,10 +187,20 @@ public class AdminController implements Initializable {
             newPkg.setName(pkgName.getText());
         }
         if(!pkgPrice.getText().equals("")){
-            newPkg.setPrice(Integer.parseInt(pkgPrice.getText()));
+            if(Integer.parseInt(pkgPrice.getText())>0)
+                newPkg.setPrice(Integer.parseInt(pkgPrice.getText()));
+            else{
+                packageTextFieldError.setText("Price must be >0");
+                return;
+            }
         }
-        if(!pkgPeriod.getText().equals("")){
-            newPkg.setPeriod(pkgPeriod.getText());
+        if(pkgPeriod.getValue() != null){
+            LocalDateTime now = LocalDateTime.now();
+            if(pkgPeriod.getValue().isBefore(ChronoLocalDate.from(now))){
+                packageTextFieldError.setText("Date must be in the future");
+                return;
+            }
+            newPkg.setPeriod( Date.valueOf(pkgPeriod.getValue()));
         }
         if(!pkgDetails.getText().equals("")){
             newPkg.setExtraDetails(pkgDetails.getText());
@@ -225,5 +255,17 @@ public class AdminController implements Initializable {
         }
         refresh();
         destinationTextFieldError.setText("Destination deleted");
+    }
+
+    @FXML
+    public void viewAllPackages(){
+        clear();
+        try {
+            adminTableView.getItems().clear();
+            List<Package> packages = packageRepository.getAllNotBookedPackages();
+            adminTableView.getItems().addAll(packages);
+        }catch(Exception e){
+            packageTextFieldError.setText("Could not load packages");
+        }
     }
 }
