@@ -20,4 +20,7 @@ public class PackageRepository {
     public void modifyPackage(Package pkg){packageService.modifyPackage(pkg);}
     public void removePackage(Package pkg){packageService.removePackage(pkg);}
     public List<Package> getAllNotBookedPackages(){return packageService.getAllNotBookedPackages();}
+    public List<Package> filterPackages(List<Package> packages,String destination,String name, int price, String period, String status, int noOfPeople){
+        return packageService.filterPackages(packages,destination,name,price,period,status,noOfPeople);
+    }
 }

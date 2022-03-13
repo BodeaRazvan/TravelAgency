@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PackageService {
     private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("ro.tutorial.lab.SD");
@@ -48,4 +49,19 @@ public class PackageService {
         return (Package) em.createQuery("select p from Package p where p.id =:value1").setParameter("value1",id).getSingleResult();
     }
 
+    public List<Package> filterPackages(List<Package> packages, String destination, String name, int price, String period,String status, int noOfPeople){
+        try{
+            return packages.stream()
+                    .filter(pkg -> destination.equals("") || pkg.getDestination().getCountry().contains(destination))
+                    .filter(pkg -> name.equals("") || pkg.getName().contains(name))
+                    .filter(pkg -> price==-1 || pkg.getPrice()<=price)
+                    .filter(pkg -> noOfPeople==-1 || pkg.getNoOfPeople()>=noOfPeople)
+                    .filter(pkg -> status.equals("") || pkg.getStatus().equals(status))
+                    .filter(pkg -> period.equals("") || pkg.getPeriod().contains(period))
+                    .collect(Collectors.toList());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

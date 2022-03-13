@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
@@ -48,6 +45,16 @@ public class UserController implements Initializable {
 
     @FXML private TextField destinationTextFieldError;
     @FXML private TextField packageTextFieldError;
+
+    @FXML private TextField destFilter;
+    @FXML private TextField nameFilter;
+    @FXML private TextField periodFilter;
+    @FXML private TextField priceFilter;
+    @FXML private TextField statusFilter;
+    @FXML private TextField noOfPeopleFilter;
+
+    @FXML private DatePicker datePicker;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -140,6 +147,7 @@ public class UserController implements Initializable {
         }
         if(pkg.getStatus().equals("BOOKED")){
             packageTextFieldError.setText("No available spots for this vacation");
+            return;
         }
         if(pkg.getStatus().equals("NOT_BOOKED")){
             pkg.setStatus("IN_PROGRESS");
@@ -187,5 +195,28 @@ public class UserController implements Initializable {
         packageRepository.modifyPackage(pkg);
         userRepository.modifyUser(user);
         refresh();
+    }
+
+    @FXML
+    public void filterPackages(){
+        String dest = destFilter.getText();
+        String name = nameFilter.getText();
+        String period = periodFilter.getText();
+        int price;
+        if(priceFilter.getText().equals("")) price = 99999; else price = Integer.parseInt(priceFilter.getText());
+        String status = statusFilter.getText();
+        int noOfPeople;
+        if(noOfPeopleFilter.getText().equals("")) noOfPeople = -1; else noOfPeople = Integer.parseInt(noOfPeopleFilter.getText());
+
+        List<Package> packages = userTableView.getItems();
+        if(packages.size() == 0){
+            packageTextFieldError.setText("Please have some packages selected (booked / all / country)");
+            return;
+        }
+
+        List<Package> foundPackages = packageRepository.filterPackages(packages,dest,name,price,period,status,noOfPeople);
+
+        userTableView.getItems().clear();
+        userTableView.getItems().addAll(foundPackages);
     }
 }
