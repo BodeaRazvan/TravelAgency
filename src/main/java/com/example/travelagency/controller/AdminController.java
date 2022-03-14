@@ -203,6 +203,23 @@ public class AdminController implements Initializable {
         if(!pkgDetails.getText().equals("")){
             newPkg.setExtraDetails(pkgDetails.getText());
         }
+        if(!pkgNoOfPeople.getText().equals("")){
+            int nr = Integer.parseInt(pkgNoOfPeople.getText());
+            if(nr<0){
+                packageTextFieldError.setText("Cannot add negative nr of people");
+                return;
+            }
+            if(nr==0){
+                newPkg.setNoOfPeople(0);
+                newPkg.setStatus("BOOKED");
+            }else{
+                newPkg.setNoOfPeople(nr);
+                if(newPkg.getUsers().isEmpty())
+                    newPkg.setStatus("NOT_BOOKED");
+                else
+                    newPkg.setStatus("IN_PROGRESS");
+            }
+        }
         try {
             packageService.modifyPackage(newPkg);
         }catch (Exception e){
